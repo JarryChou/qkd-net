@@ -8,15 +8,15 @@ import java.util.Formatter;
 public class KeyUtils {
 
     public static String getKey(RandomAccessFile stream, int index, String md5Str) throws Exception {
-
+        //md5 is a 'message-digest algorithm' that produces a 128 bit hash of a message
         if (md5Str == null || md5Str.length() == 0)
             return "";
 
-        byte[] bytes = keyBytes(stream, index);
+        byte[] bytes = keyBytes(stream, index); //stream contains the data
         MessageDigest md = MessageDigest.getInstance("MD5");
-        byte[] md5Digest = md.digest(bytes);
+        byte[] md5Digest = md.digest(bytes); //convert data to 128bit md5
         String md5CalcStr = bytesToHexString(md5Digest);
-        if (md5CalcStr.equals(md5Str))
+        if (md5CalcStr.equals(md5Str)) 
             return bytesToHexString(bytes);
         else
             return "";
@@ -38,7 +38,7 @@ public class KeyUtils {
             formatter.format("%02x", b);
         }
         String sha1 = formatter.toString();
-        formatter.close();
+        formatter.close(); 
         return sha1;
     }
 

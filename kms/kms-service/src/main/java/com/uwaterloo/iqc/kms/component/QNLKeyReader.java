@@ -31,7 +31,7 @@ public class QNLKeyReader {
         logger.info("QNLKeyReader.read:" + src + "->" + dest + "," + ip + ":" + port + "," + poolBaseDir + "," + blockSz + "," + byteSz);
         try {
             blockId = connect(src, dest, keys, ip, port, poolBaseDir, blockSz, byteSz);
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(); //empty string
             sb.append(poolBaseDir).append("/").append(src).append("/").append(dest);
             File f = new File(sb.toString());
             if (!f.exists()) {
@@ -39,7 +39,7 @@ public class QNLKeyReader {
             }
             sb.append("/").append(blockId);
             logger.info("QNLKeyReader.writeKeys:" + sb + ", blockSz:" + blockSz);
-            QNLUtils.writeKeys(keys, sb.toString(), (int)blockSz);
+            QNLUtils.writeKeys(keys, sb.toString(), (int)blockSz); //writing out the keys in a folder poolBaseDir/src/dest/blockId
         } catch(Exception e) {
             java.io.StringWriter sw = new java.io.StringWriter();
             java.io.PrintWriter pw = new java.io.PrintWriter(sw);
