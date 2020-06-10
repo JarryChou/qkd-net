@@ -26,3 +26,8 @@ hs_err_pid*
 *.classpath
 *.settings
 *.project
+
+*.git-old
+*.idea
+*target/
+
