@@ -1,7 +1,0 @@
-QToolTip
-{
-    /* explicit border width is required https://bugreports.qt.io/browse/QTBUG-41313 */
-    border: 0px;
-    color: black;
-    background: #ffffdc;
-}
