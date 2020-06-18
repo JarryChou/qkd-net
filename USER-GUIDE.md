@@ -32,110 +32,135 @@ r versions should run fine.
 ## Installation
 Here we show how to get a 4-node QKD network running. We call the 4 nodes A, B, C and D, with IP addresses `192.168.121`, `192.168.1.76`, `192.168.1.47` and `192.168.1.208` respectively. (instructions on how to find IP add of your system is shown later). For simplicity, the topology of the network is A--B--C--D, i.e the nodes are connected in a linear chain.
 
-1. Assuming we are on system A, clone the repository using
-```
-$ git clone https://github.com/ajrheng/qkd-net.git
-```
-2. then `cd` into the directory
-```
-$ cd qkd-net/kms
-```
-3. and build the source files
-```
-$ ./scripts/build
-```
-This command can take several minutes and spit out massive amounts of text on the command line, especially on first run. What is happening is the system is using the `maven` library to download required Java dependencies and compiling all the source (`.java` files) to executable programs that we can run later.
+1. Assuming we are on system A, clone the repository 
+
+    ```
+    $ git clone https://github.com/ajrheng/qkd-net.git
+    ```
+ 
+2. Then `cd` into the directory
+
+    ```
+    $ cd qkd-net/kms
+    ```
+    
+3. And build the source files
+
+    ```
+    $ ./scripts/build
+    ```
+    
+    This command can take several minutes and spit out massive amounts of text on the command line, especially on first run. What is happening is the system is using the `maven` library to download required Java dependencies and compiling all the source (`.java` files) to executable programs that we can run later.
 
 4. Now we want to generate the config files that the program depends on, so run in order:
-```
-$ cd ../qkd-config
-$ tar xvf a.tar
-$ rm -r ~/.qkd
-$ mv .qkd ~/
-```
-What happens is the building (step 3) generates a folder at `~/.qkd` that we somehow do not want, so we remove it with `rm`. We generate the `.qkd` folder that we want from untar-ing the provided `a.tar` and moving it to `~/`. (`~` refers to the `$HOME` folder in Unix systems. In my case it is `/home/alvin`).
+
+    ```
+    $ cd ../qkd-config
+    $ tar xvf a.tar
+    $ rm -r ~/.qkd
+    $ mv .qkd ~/
+    ```
+    
+    What happens is the building (step 3) generates a folder at `~/.qkd` that we somehow do not want, so we remove it with `rm`. We generate the `.qkd` folder that we want from untar-ing the provided `a.tar` and moving it to `~/`. (`~` refers to the `$HOME` folder in Unix systems. In my case it is `/home/alvin`).
 
 5. The network topology is encoded in the file `routes.json` located at `~/.qkd/qnl/routes.json`. It looks like this
-```
-{ 
-  "adjacent": {
-    "B": "192.168.1.76"
-  },
-  "nonAdjacent": {
-  }  
-}
-```
-IP addresses of adjacent nodes are stored under "adjacent". Since only node B is adjacent to A, this has been pre-set in the provided folder. **Update the IP addresses for your nodes accordingly, as they will differ from mine**.
+
+    ```
+    { 
+      "adjacent": {
+        "B": "192.168.1.76"
+      },
+      "nonAdjacent": {
+      }  
+    }
+    ```
+
+    IP addresses of adjacent nodes are stored under "adjacent". Since only node B is adjacent to A, this has been pre-set in the provided folder. **Update the IP addresses for your nodes accordingly, as they will differ from mine**.
 
 6. Now to run the executables
-```
-$ cd ../kms
-$ ./scripts/run
-```
-This process takes about 1-2 minutes. To see that this has been executed successfully, perform
-```
-$ screen -ls
-There are screens on:
-	3753.kms-routing-svc	(18/06/2020 11:50:00)	(Detached)
-	3750.kms-qnl-svc	(18/06/2020 11:50:00)	(Detached)
-	3690.kms-gw	(18/06/2020 11:49:40)	(Detached)
-	3634.kms-svc	(18/06/2020 11:49:20)	(Detached)
-	3578.auth-svc	(18/06/2020 11:49:00)	(Detached)
-	3499.reg-svc	(18/06/2020 11:48:40)	(Detached)
-	3453.config-svc	(18/06/2020 11:48:30)	(Detached)
-7 Sockets in /var/run/screen/S-alvin.
-```
-The `run.sh` script that was executed ran the Java executables that we compiled earlier in 'detached' `screen` windows. You can see these are the relevant services in the QKD network, such as the KMS-QNL service, KMS-routing service and so on. In essence, `qkd-net` requires all these services to be running _simultaneously_, so the developers run each of these services in a separate terminal in the background ('detached'), which is what `screen` does. 
+
+    ```
+    $ cd ../kms
+    $ ./scripts/run
+    ```
+
+    This process takes about 1-2 minutes. To see that this has been executed successfully, perform
+
+    ```
+    $ screen -ls
+    There are screens on:
+        3753.kms-routing-svc	(18/06/2020 11:50:00)	(Detached)
+        3750.kms-qnl-svc	(18/06/2020 11:50:00)	(Detached)
+        3690.kms-gw	(18/06/2020 11:49:40)	(Detached)
+        3634.kms-svc	(18/06/2020 11:49:20)	(Detached)
+        3578.auth-svc	(18/06/2020 11:49:00)	(Detached)
+        3499.reg-svc	(18/06/2020 11:48:40)	(Detached)
+        3453.config-svc	(18/06/2020 11:48:30)	(Detached)
+    7 Sockets in /var/run/screen/S-alvin.
+    ```
+    
+    The `run.sh` script that was executed ran the Java executables that we compiled earlier in 'detached' `screen` windows. You can see these are the relevant services in the QKD network, such as the KMS-QNL service, KMS-routing service and so on. In essence, `qkd-net` requires all these services to be running _simultaneously_, so the developers run each of these services in a separate terminal in the background ('detached'), which is what `screen` does. 
 
 7. Edit and compile the application layer files:
-```
-$ cd ../applications/tls-kms-demo
-```
-and edit function `static char* site_id(char* ip)` in `bob.c` with your IP addresses. It looks like this on my machine:
-```
-static char* site_id(char* ip) {
 
-	if (strcmp(ip, "192.168.1.76") == 0)
-		return "B";
-	else if (strcmp(ip, "192.168.1.121") == 0)
-		return "A";
-	else if (strcmp(ip, "192.168.1.47") == 0)
-		return "C";
-    else
-        return "D";
-}
-```
+    ```
+    $ cd ../applications/tls-kms-demo
+    ```
+
+    and edit function `static char* site_id(char* ip)` in `bob.c` with your IP addresses. It looks like this on my machine:
+    
+    ```
+    static char* site_id(char* ip) {
+
+        if (strcmp(ip, "192.168.1.76") == 0)
+            return "B";
+        else if (strcmp(ip, "192.168.1.121") == 0)
+            return "A";
+        else if (strcmp(ip, "192.168.1.47") == 0)
+            return "C";
+        else
+            return "D";
+    }
+    ```
+    
 8. Compile the application layer with
-```
-$ make clean
-$ make
-```
 
-9 Repeat steps 1-8 on nodes B, C and D, **untar-ing the corresponding `.tar` in step 4 and making sure to edit the IP addresses in `routes.json`** accordingly. For example, for node B, since it is adjacent to A and C, `routes.json` should look like
-```
-{ 
-  "adjacent": {
-    "A": "192.168.1.121",
-    "C": "192.168.1.47"
-  },
-  "nonAdjacent": {
-  }  
-}
-```
+    ```
+    $ make clean
+    $ make
+    ```
+    
+9. Repeat steps 1-8 on nodes B, C and D, **untar-ing the corresponding `.tar` in step 4 and making sure to edit the IP addresses in `routes.json`** accordingly. For example, for node B, since it is adjacent to A and C, `routes.json` should look like
+
+    ```
+    { 
+      "adjacent": {
+        "A": "192.168.1.121",
+        "C": "192.168.1.47"
+      },
+      "nonAdjacent": {
+      }  
+    }
+    ```
+    
 10. Now we can test the demo. Say we would like to send the file `speqtral.png` from node A to node D, then we run `alice` on A and `bob` on D. First on D run:
-```
-$ ./bob -b 10446
-```
-which tells node D to listen for connections on port 10446. Then on A, run:
-```
-$ ./alice -i 192.168.1.208 -b 10446 -f data/speqtral.png
-```
-which tells node A to connect to the IP address after `-i`  on port 10446 and send the file denoted after `-f`. If successful, on A you should get something that looks like
-![alice](img/alice.png?raw=true)
 
-and on B
-![bob](img/bob.png?raw=true)
-You will find the transfered file as `qkd-net/applications/tls-kms-demo/bobdemo0`. Behind the scenes, the KMS and QNL layers have worked together to allow key sharing between the trusted nodes B and C, since A and D are not adjacent nodes.
+    ```
+    $ ./bob -b 10446
+    ```
+    
+    which tells node D to listen for connections on port 10446. Then on A, run:
+    
+    ```
+    $ ./alice -i 192.168.1.208 -b 10446 -f data/speqtral.png
+    ```
+
+    which tells node A to connect to the IP address after `-i`  on port 10446 and send the file denoted after `-f`. If successful, on A you should get something that looks like
+    ![alice](img/alice.png?raw=true)
+
+    and on B
+    ![bob](img/bob.png?raw=true)
+    You will find the transfered file as `qkd-net/applications/tls-kms-demo/bobdemo0`. Behind the scenes, the KMS and QNL layers have worked together to allow key sharing between the trusted nodes B and C, since A and D are not adjacent nodes.
 
 ## Getting your IP address
 Obtaining the IP addresses of your nodes is crucial to getting the demo to run, so here is a quick guide on how to do so. We assume here that all nodes are running within the same LAN (i.e. connected to same Wifi network), so the IP address we are looking for is a private IP address (usually 192.168.x.x). Also, we assume the nodes are different VirtualBox VMs. 
@@ -172,24 +197,28 @@ In the end, after settling on a new network topology and editing `~/.qkd` as req
 Here are some additional tips that hopefully might help reduce some frustrations for you while running the project, as I had to find out the hard way.
 
 1. When changing network topology (adding/removing nodes etc), you will need to re-run the KMS, QNL services by re-doing the `./scripts/run` in step 6. If you already have existing `screen` sessions, remember to `killall screen` first. However, you might find that after rerunning, you face some errors when running `alice` and `bob`. For me, I've noticed occasional `SSL_ERROR` as well as Java exceptions like `java.lang.NullPointerException`, among others. Your best bet to resolving these errors is to _reinstall  `qkd-net` from scratch_. I found that this works all the time. By reinstall I mean wipe all related folders from your machine and restarting from step 1. The folders you want to remove are
-```
-qkd-net
-qkd_logs
-config-repo
-~/.qkd
-```
-The first three folders will be located at whichever directory you did `git clone` initially.
+
+    ```
+    qkd-net
+    qkd_logs
+    config-repo
+    ~/.qkd
+    ```
+    
+    The first three folders will be located at whichever directory you did `git clone` initially.
 
 2. You can find some useful log files in `qkd_logs`. The most useful one for was `lsrp.log`. LSRP stands for Link-State Routing Protocol, which is described in the arXiv paper. Basically nodes are only aware of local links to adjacent nodes, so if you wish to send a file to a non-adjacent node, the LSRP involves each node broadcasting its adjacent links, allowing every node to reconstruct a 'map' of the network and deciding the shortest-path to route the key-relaying procedure. You can see if the LSRP protocol is carried out succesfully on your network by looking at `lsrp.log`. For example, on node B of my 4-node setup, it looks like 
-```
-=======Nodes/Links========
-A
-    A <----> B = 1
-B
-    B <----> A = 1
-    B <----> C = 1
-D
-    D <----> C = 1
-========Nodes/Links========
-```
-which is the correct topology of my linear network (A--B--C--D). Note that B initially does not know anything about D since they are not adjacent, but due to LSRP it knows C and D are connected. If your demo is giving you errors, a good sanity check is to open `lsrp.log`. If you notice it contains incomplete information, chances are your network was not connected properly and can  troubleshoot (probably best to just reinstall, see point 1).
+
+    ```
+    =======Nodes/Links========
+    A
+        A <----> B = 1
+    B
+        B <----> A = 1
+        B <----> C = 1
+    D
+        D <----> C = 1
+    ========Nodes/Links========
+    ```
+    
+    which is the correct topology of my linear network (A--B--C--D). Note that B initially does not know anything about D since they are not adjacent, but due to LSRP it knows C and D are connected. If your demo is giving you errors, a good sanity check is to open `lsrp.log`. If you notice it contains incomplete information, chances are your network was not connected properly and you can troubleshoot from there (probably best to just reinstall, see point 1).
