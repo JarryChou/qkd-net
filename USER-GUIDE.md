@@ -123,15 +123,24 @@ $ make
 ```
 10. Now we can test the demo. Say we would like to send the file `speqtral.png` from node A to node D, then we run `alice` on A and `bob` on D. First on D run:
 ```
-./bob -b 10446
+$ ./bob -b 10446
 ```
 which tells node D to listen for connections on port 10446. Then on A, run:
 ```
-./alice -i 192.168.1.208 -b 10446 -f data/speqtral.mp3
+$ ./alice -i 192.168.1.208 -b 10446 -f data/speqtral.png
 ```
 which tells node A to connect to the IP address after `-i`  on port 10446 and send the file denoted after `-f`. If successful, on A you should get something that looks like
-![img](img/alice.png?raw=true)
+![alice](img/alice.png?raw=true)
 
 and on B
-![img](img/bob.png?raw=true)
+![bob](img/bob.png?raw=true)
 You will find the transfered file as `qkd-net/applications/tls-kms-demo/bobdemo0`. Behind the scenes, the KMS and QNL layers have worked together to allow key sharing between the trusted nodes B and C, since A and D are not adjacent nodes.
+
+## Getting your IP address
+Obtaining the IP addresses of your nodes is crucial to getting the demo to run, so here is a quick guide on how to do so. We assume here that all nodes are running within the same LAN (i.e. connected to same Wifi network), so the IP address we are looking for is a private IP address (usually 192.168.x.x). Also, we assume the nodes are different VirtualBox VMs. 
+
+First, in VirtualBox, select your VM and go to `Settings > Network > Adapter 1 > Attached to` and change it to `Bridged Adapter` mode. This allows your VM to interface directly with other machines on the LAN, and not just with the host OS. To get your IP address, run `ifconfig`. If you do not have it installed, `sudo apt-get install net-tools`. The IP address is shown highlighted:
+
+![ip](img/ip.png?raw=true)
+
+
