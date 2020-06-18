@@ -207,7 +207,7 @@ Here are some additional tips that hopefully might help reduce some frustrations
     
     The first three folders will be located at whichever directory you did `git clone` initially.
 
-2. You can find some useful log files in `qkd_logs`. The most useful one for me was `lsrp.log`. LSRP stands for Link-State Routing Protocol, which is described in the arXiv paper. Basically nodes are only aware of local links to adjacent nodes, so if you wish to send a file to a non-adjacent node, the LSRP involves each node broadcasting its adjacent links, allowing every node to reconstruct a 'map' of the network and deciding the shortest-path to route the key-relaying procedure. You can see if the LSRP protocol is carried out succesfully on your network by looking at `lsrp.log`. For example, on node B of my 4-node setup, it looks like 
+2. You can find some useful log files in `qkd_logs`. The most useful one for me was `lsrp.log`. LSRP stands for Link-State Routing Protocol, which is described in the arXiv paper. Basically nodes are only aware of local links to adjacent nodes, so if you wish to send a file to a non-adjacent node, the LSRP involves each node broadcasting its adjacent links, allowing every node to reconstruct a 'map' of the network and deciding the shortest-path to route the key-relaying procedure. You can see if the LSRP protocol is carried out succesfully on your network by looking at `lsrp.log`. For example, on node A of my 4-node setup, it looks like 
 
     ```
     ========Nodes/Links========
@@ -224,5 +224,5 @@ Here are some additional tips that hopefully might help reduce some frustrations
     ========Nodes/Links========
     ```
     
-    which is the correct topology of my linear network (A--B--C--D). Note that B initially does not know anything about D since they are not adjacent, but due to LSRP it knows C and D are connected. If your demo is giving you errors, a good sanity check is to open `lsrp.log`. Typically it might contain repeated lines, or the information inside come out wrong/is formatted weirdly. Note that sometimes missing links are common and may not indicate problems, as not every node needs to construct a map of the network. It's not straightforward, but you may want to refer to `lsrp.log` as a last resort if you are debugging. Otherwise, reinstalling from scratch usually works.
+    which is the correct topology of my linear network (A--B--C--D). Note that A initially does not know anything about C and D since they are not adjacent to A, but due to LSRP it gets information of C and D. If your demo is giving you errors, a good sanity check is to open `lsrp.log`. Typically it might contain repeated lines, or the information inside come out wrong/is formatted weirdly. Note that sometimes missing links are common and may not indicate problems, as not every node needs to construct a map of the network. It's not straightforward, but you may want to refer to `lsrp.log` as a last resort if you are debugging. Otherwise, reinstalling from scratch usually works.
 
