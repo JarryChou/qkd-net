@@ -193,7 +193,7 @@ So to ensure two adjacent nodes have the same key file, you can copy the file di
 
 In the end, after settling on a new network topology and editing `~/.qkd` as required, you might want to `tar` them back for easy storing and re-setup if you ever need to. You can do so with `tar cvf [name_of_tar_file] ~/.qkd`. 
 
-##Additional tips
+## Additional tips
 Here are some additional tips that hopefully might help reduce some frustrations for you while running the project, as I had to find out the hard way.
 
 1. When changing network topology (adding/removing nodes etc), you will need to re-run the KMS, QNL services by re-doing the `./scripts/run` in step 6. If you already have existing `screen` sessions, remember to `killall screen` first. However, you might find that after rerunning, you face some errors when running `alice` and `bob`. For me, I've noticed occasional `SSL_ERROR` as well as Java exceptions like `java.lang.NullPointerException`, among others. Your best bet to resolving these errors is to _reinstall  `qkd-net` from scratch_. I found that this works all the time. By reinstall I mean wipe all related folders from your machine and restarting from step 1. The folders you want to remove are
