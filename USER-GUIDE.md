@@ -53,6 +53,7 @@ $ rm -r ~/.qkd
 $ mv .qkd ~/
 ```
 What happens is the building (step 3) generates a folder at `~/.qkd` that we somehow do not want, so we remove it with `rm`. We generate the `.qkd` folder that we want from untar-ing the provided `a.tar` and moving it to `~/`. (`~` refers to the `$HOME` folder in Unix systems. In my case it is `/home/alvin`).
+
 5. The network topology is encoded in the file `routes.json` located at `~/.qkd/qnl/routes.json`. It looks like this
 ```
 { 
@@ -128,4 +129,9 @@ which tells node D to listen for connections on port 10446. Then on A, run:
 ```
 ./alice -i 192.168.1.208 -b 10446 -f data/speqtral.mp3
 ```
-which tells node A to connect to the IP address after `-i`  on port 10446 and send the file denoted after `-f`.
+which tells node A to connect to the IP address after `-i`  on port 10446 and send the file denoted after `-f`. If successful, on A you should get something that looks like
+![img](img/alice.png?raw=true)
+
+and on B
+![img](img/bob.png?raw=true)
+You will find the transfered file as `qkd-net/applications/tls-kms-demo/bobdemo0`. Behind the scenes, the KMS and QNL layers have worked together to allow key sharing between the trusted nodes B and C, since A and D are not adjacent nodes.
