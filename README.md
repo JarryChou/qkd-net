@@ -1,6 +1,4 @@
-# Look at USER-GUIDE.MD for a mode detailed user guide!
-
-qkd-net
+# qkd-net (look at USER-GUIDE.md for a mode detailed user guide!)
 =======
 
 Overview
