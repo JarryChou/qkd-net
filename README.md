@@ -1,3 +1,5 @@
+# Look at USER-GUIDE.MD for a mode detailed user guide!
+
 qkd-net
 =======
 
