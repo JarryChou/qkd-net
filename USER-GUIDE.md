@@ -83,4 +83,49 @@ There are screens on:
 	3453.config-svc	(18/06/2020 11:48:30)	(Detached)
 7 Sockets in /var/run/screen/S-alvin.
 ```
-The `run.sh` script that was executed ran the Java executables that we compiled earlier in 'detached' `screen` windows. You can see these are the relevant services in the QKD network, such as the KMS-QNL service, KMS-routing service and so on. In essence, `qkd-net` requires all these services to be run simultaneously, so the developers run each of these services in a separate terminal in the background ('detached'), which is what `screen` does. 
+The `run.sh` script that was executed ran the Java executables that we compiled earlier in 'detached' `screen` windows. You can see these are the relevant services in the QKD network, such as the KMS-QNL service, KMS-routing service and so on. In essence, `qkd-net` requires all these services to be running _simultaneously_, so the developers run each of these services in a separate terminal in the background ('detached'), which is what `screen` does. 
+
+7. Edit and compile the application layer files:
+```
+$ cd ../applications/tls-kms-demo
+```
+and edit function `static char* site_id(char* ip)` in `bob.c` with your IP addresses. It looks like this on my machine:
+```
+static char* site_id(char* ip) {
+
+	if (strcmp(ip, "192.168.1.76") == 0)
+		return "B";
+	else if (strcmp(ip, "192.168.1.121") == 0)
+		return "A";
+	else if (strcmp(ip, "192.168.1.47") == 0)
+		return "C";
+    else
+        return "D";
+}
+```
+8. Compile the application layer with
+```
+$ make clean
+$ make
+```
+
+9 Repeat steps 1-8 on nodes B, C and D, **untar-ing the corresponding `.tar` in step 4 and making sure to edit the IP addresses in `routes.json`** accordingly. For example, for node B, since it is adjacent to A and C, `routes.json` should look like
+```
+{ 
+  "adjacent": {
+    "A": "192.168.1.121",
+    "C": "192.168.1.47"
+  },
+  "nonAdjacent": {
+  }  
+}
+```
+10. Now we can test the demo. Say we would like to send the file `speqtral.png` from node A to node D, then we run `alice` on A and `bob` on D. First on D run:
+```
+./bob -b 10446
+```
+which tells node D to listen for connections on port 10446. Then on A, run:
+```
+./alice -i 192.168.1.208 -b 10446 -f data/speqtral.mp3
+```
+which tells node A to connect to the IP address after `-i`  on port 10446 and send the file denoted after `-f`.
