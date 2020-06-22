@@ -35,7 +35,7 @@ Here we show how to get a 4-node QKD network running. We call the 4 nodes A, B, 
 1. Assuming we are on system A, clone the repository 
 
     ```
-    $ git clone https://github.com/ajrheng/qkd-net.git
+    $ git clone https://github.com/SpeQtral/qkd-net.git
     ```
  
 2. Then `cd` into the directory
